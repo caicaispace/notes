@@ -1,0 +1,529 @@
+<!DOCTYPE html><html><head><title>Javascript设计模式</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'></head><body><div id='preview-contents' class='note-content'>
+                        <div id="wmd-preview" class="preview-content"></div>
+                    <div id="wmd-preview-section-81" class="wmd-preview-section preview-content">
+
+</div><div id="wmd-preview-section-82" class="wmd-preview-section preview-content">
+
+<h1 id="javascript设计模式">Javascript设计模式</h1>
+
+<p><p class="note-tags "><code class="notebook">Notes</code> <code>js</code> <code>学习笔记</code> </p></p>
+
+<div><div class="toc"><div class="toc">
+<ul>
+<li><a href="#javascript设计模式">Javascript设计模式</a><ul>
+<li><a href="#单例模式">单例模式</a></li>
+<li><a href="#简单工厂模式">简单工厂模式</a></li>
+<li><a href="#观察者模式">观察者模式</a></li>
+<li><a href="#适配器模式">适配器模式</a></li>
+<li><a href="#代理模式">代理模式</a></li>
+<li><a href="#桥接模式">桥接模式</a></li>
+<li><a href="#外观模式">外观模式</a></li>
+<li><a href="#访问者模式">访问者模式</a></li>
+<li><a href="#策略模式">策略模式</a></li>
+<li><a href="#模版方法模式">模版方法模式</a></li>
+<li><a href="#中介者模式">中介者模式</a></li>
+<li><a href="#迭代器模式">迭代器模式</a></li>
+<li><a href="#组合模式">组合模式</a></li>
+<li><a href="#备忘录模式">备忘录模式</a></li>
+<li><a href="#职责链模式">职责链模式</a></li>
+<li><a href="#享元模式">享元模式</a></li>
+<li><a href="#状态模式">状态模式</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<p>　　<code>《parctical common lisp》</code>的作者曾说，如果你需要一种模式，那一定是哪里出了问题。他所说的问题是指因为语言的天生缺陷，不得不去寻求和总结一种通用的解决方案。</p>
+
+<p>　　不管是弱类型或强类型，静态或动态语言，命令式或说明式语言、每种语言都有天生的优缺点。一个牙买加运动员， 在短跑甚至拳击方面有一些优势，在练瑜伽上就欠缺一些。 <br>
+　　 <br>
+　　术士和暗影牧师很容易成为一个出色的辅助，而一个背着梅肯满地图飞的敌法就会略显尴尬。 换到程序中, 静态语言里可能需要花很多功夫来实现装饰者，而js由于能随时往对象上面扔方法，以至于装饰者模式在js里成了鸡肋。 <br>
+讲javascript设计模式的书还比较少. Pro javaScript Design Patterns.是比较经典的一本，但是它里面的例子举得比较啰嗦，所以结合我在工作中写过的代码，把我的理解总结一下。如果我的理解出现了偏差，请不吝指正。</p>
+
+</div><div id="wmd-preview-section-83" class="wmd-preview-section preview-content">
+
+<h2 id="单例模式">单例模式</h2>
+
+<p>　　单例模式的定义是产生一个类的唯一实例，但 js 本身是一种“无类”语言。很多讲js设计模式的文章把{}当成一个单例来使用也勉强说得通。因为js生成对象的方式有很多种，我们来看下另一种更有意义的单例。</p>
+
+<p>　　有这样一个常见的需求，点击某个按钮的时候需要在页面弹出一个遮罩层。比如web.qq.com点击登录的时候.</p>
+
+<p>　这个生成灰色背景遮罩层的代码是很好写的.</p>
+
+</div><div id="wmd-preview-section-84" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> createMask = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.body.appendChild(  <span class="hljs-built_in">document</span>.createElement(div)  );<br><br>$( <span class="hljs-string">'button'</span> ).click( <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   Var mask  = createMask();<br>   mask.show();<br><br>})<br></code></pre>
+
+<p>　　问题是, 这个遮罩层是全局唯一的, 那么每次调用createMask都会创建一个新的div, 虽然可以在隐藏遮罩层的把它remove掉. 但显然这样做不合理.</p>
+
+<p>　再看下第二种方案, 在页面的一开始就创建好这个div. 然后用一个变量引用它.</p>
+
+</div><div id="wmd-preview-section-85" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> mask = <span class="hljs-built_in">document</span>.body.appendChild( <span class="hljs-built_in">document</span>.createElement( <span class="hljs-string">'div'</span> ) );<br><br>$( <span class="hljs-string">'button'</span> ).click( <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   mask.show();<br>} )<br></code></pre>
+
+<p>　　这样确实在页面只会创建一个遮罩层div, 但是另外一个问题随之而来, 也许我们永远都不需要这个遮罩层, 那又浪费掉一个div, 对dom节点的任何操作都应该非常吝啬.</p>
+
+<p>　　如果可以借助一个变量. 来判断是否已经创建过div呢?</p>
+
+</div><div id="wmd-preview-section-86" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> mask;<br>    <span class="hljs-keyword">var</span> createMask = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    <span class="hljs-keyword">if</span> ( mask ){<br>        <span class="hljs-keyword">return</span> mask;<br>    }<br>    <span class="hljs-keyword">else</span>{<br>        mask = <span class="hljs-built_in">document</span>,body.appendChild(  <span class="hljs-built_in">document</span>.createElement(div)  );<br>        <span class="hljs-keyword">return</span> mask;<br>    }<br>}<br></code></pre>
+
+<p>　　看起来不错, 到这里的确完成了一个产生单列对象的函数. 我们再仔细看这段代码有什么不妥.</p>
+
+<p>　　首先这个函数是存在一定副作用的, 函数体内改变了外界变量mask的引用, 在多人协作的项目中, createMask是个不安全的函数. 另一方面, mask这个全局变量并不是非需不可. 再来改进一下.</p>
+
+</div><div id="wmd-preview-section-87" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> createMask = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    <span class="hljs-keyword">var</span> mask;<br>    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>       <span class="hljs-keyword">return</span> mask || ( mask = <span class="hljs-built_in">document</span>.body.appendChild( <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>) ) )<br>    }<br>}()<br></code></pre>
+
+<p>　　用了个简单的闭包把变量mask包起来, 至少对于createMask函数来讲, 它是封闭的.</p>
+
+<p>　　可能看到这里, 会觉得单例模式也太简单了. 的确一些设计模式都是非常简单的, 即使从没关注过设计模式的概念, 在平时的代码中也不知不觉用到了一些设计模式. 就像多年前我明白老汉推车是什么回事的时候也想过尼玛原来这就是老汉推车. <br>
+GOF里的23种设计模式, 也是在软件开发中早就存在并反复使用的模式. 如果程序员没有明确意识到他使用过某些模式, 那么下次他也许会错过更合适的设计 (这段话来自《松本行弘的程序世界》).</p>
+
+<p>　　再回来正题, 前面那个单例还是有缺点. 它只能用于创建遮罩层. 假如我又需要写一个函数, 用来创建一个唯一的xhr对象呢? 能不能找到一个通用的singleton包装器.</p>
+
+<p>　　js中函数是第一型, 意味着函数也可以当参数传递. 看看最终的代码.</p>
+
+</div><div id="wmd-preview-section-88" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> singleton = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( fn )</span></span>{<br>    <span class="hljs-keyword">var</span> result;<br>    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>        <span class="hljs-keyword">return</span> result || ( result = fn .apply( <span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span> ) );<br>    }<br>}<br></code></pre>
+
+</div><div id="wmd-preview-section-89" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> createMask = singleton( <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.body.appendChild( <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>) );<br>})<br></code></pre>
+
+<p>　　用一个变量来保存第一次的返回值, 如果它已经被赋值过, 那么在以后的调用中优先返回该变量. </p>
+
+<p>　　而真正创建遮罩层的代码是通过回调函数的方式传人到singleton包装器中的. 这种方式其实叫桥接模式. 关于桥接模式, 放在后面一点点来说. <br>
+然而singleton函数也不是完美的, 它始终还是需要一个变量result来寄存div的引用. 遗憾的是js的函数式特性还不足以完全的消除声明和语句.</p>
+
+<hr>
+
+</div><div id="wmd-preview-section-90" class="wmd-preview-section preview-content">
+
+<h2 id="简单工厂模式">简单工厂模式</h2>
+
+<p>　　简单工厂模式是由一个方法来决定到底要创建哪个类的实例, 而这些实例经常都拥有相同的接口.这种模式主要用在所实例化的类型在编译期并不能确定， 而是在执行期决定的情况。 说的通俗点，就像公司茶水间的饮料机，要咖啡还是牛奶取决于你按哪个按钮。</p>
+
+<p>　　简单工厂模式在创建ajax对象的时候也非常有用.</p>
+
+<p>　　之前我写了一个处理ajax异步嵌套的库，地址在 <a href="https://github.com/AlloyTeam/DanceRequest" target="_blank">https://github.com/AlloyTeam/DanceRequest</a></p>
+
+<p>　　这个库里提供了几种ajax请求的方式，包括xhr对象的get, post, 也包括跨域用的jsonp和iframe. 为了方便使用, 这几种方式都抽象到了同一个接口里面.</p>
+
+</div><div id="wmd-preview-section-91" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> request1 = Request(<span class="hljs-string">'cgi.xx.com/xxx'</span> , <span class="hljs-string">'get'</span> );<br><br>request1.start();<br><br>request1.done( fn );<br><br><span class="hljs-keyword">var</span> request2 = Request(<span class="hljs-string">'cgi.xx.com/xxx'</span> , <span class="hljs-string">'jsonp'</span> );<br><br>request2.start();<br><br>request2.done( fn );<br></code></pre>
+
+<p>　　Request实际上就是一个工厂方法, 至于到底是产生xhr的实例, 还是jsonp的实例. 是由后来的代码决定的。 <br>
+实际上在js里面，所谓的构造函数也是一个简单工厂。只是批了一件new的衣服. 我们扒掉这件衣服看看里面。</p>
+
+<p>　　通过这段代码, 在firefox, chrome等浏览器里，可以完美模拟new.</p>
+
+</div><div id="wmd-preview-section-92" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">A</span><span class="hljs-params">( name )</span></span>{<br>      <span class="hljs-keyword">this</span>.name = name;<br>}<br><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ObjectFactory</span><span class="hljs-params">()</span></span>{<br><br>      <span class="hljs-keyword">var</span> obj = {},<br>             Constructor = <span class="hljs-built_in">Array</span>.prototype.shift.call( <span class="hljs-built_in">arguments</span> );<br><br>    obj.__proto__ =  <span class="hljs-keyword">typeof</span> Constructor .prototype === <span class="hljs-string">'number'</span> <br>                ? <span class="hljs-built_in">Object</span>.prototype<br>                : Constructor .prototype;<br><br>      <span class="hljs-keyword">var</span> ret = Constructor.apply( obj, <span class="hljs-built_in">arguments</span> );<br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> ret === <span class="hljs-string">'object'</span> ? ret : obj;<br>}<br><br><span class="hljs-keyword">var</span> a = ObjectFactory( A, <span class="hljs-string">'svenzeng'</span> );<br><span class="hljs-built_in">console</span>.log( a.name );  <span class="hljs-comment">//svenzeng</span><br></code></pre>
+
+<p>　　这段代码来自es5的new和构造器的相关说明， 可以看到，所谓的new， 本身只是一个对象的复制和改写过程， 而具体会生成什么是由调用ObjectFactory时传进去的参数所决定的。</p>
+
+<hr>
+
+</div><div id="wmd-preview-section-93" class="wmd-preview-section preview-content">
+
+<h2 id="观察者模式">观察者模式</h2>
+
+<p>　　观察者模式( 又叫发布者-订阅者模式 )应该是最常用的模式之一. 在很多语言里都得到大量应用. 包括我们平时接触的dom事件. 也是js和dom之间实现的一种观察者模式.</p>
+
+</div><div id="wmd-preview-section-94" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">div.onclick  =  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">click</span> <span class="hljs-params">()</span></span>{<br>   alert ( <span class="hljs-string">'click'</span> )<br>}<br></code></pre>
+
+<p>　　只要订阅了div的click事件. 当点击div的时候, function click就会被触发. <br>
+那么到底什么是观察者模式呢. 先看看生活中的观察者模式。</p>
+
+<p>　　好莱坞有句名言. “不要给我打电话， 我会给你打电话”. 这句话就解释了一个观察者模式的来龙去脉。 其中“我”是发布者， “你”是订阅者。 <br>
+再举个例子，我来公司面试的时候，完事之后每个面试官都会对我说：“请留下你的联系方式， 有消息我们会通知你”。 </p>
+
+<p>　　在这里“我”是订阅者， 面试官是发布者。所以我不用每天或者每小时都去询问面试结果， 通讯的主动权掌握在了面试官手上。而我只需要提供一个联系方式。</p>
+
+<p>　　观察者模式可以很好的实现2个模块之间的解耦。 假如我正在一个团队里开发一个html5游戏. 当游戏开始的时候，需要加载一些图片素材。加载好这些图片之后开始才执行游戏逻辑. 假设这是一个需要多人合作的项目. 我完成了Gamer和Map模块, 而我的同事A写了一个图片加载器loadImage.</p>
+
+<p>loadImage的代码如下</p>
+
+</div><div id="wmd-preview-section-95" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">loadImage(  imgAry,  <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  Map.init();<br>  Gamer.init();<br>} )<br></code></pre>
+
+<p>　　当图片加载好之后, 再渲染地图, 执行游戏逻辑. 嗯, 这个程序运行良好. 突然有一天, 我想起应该给游戏加上声音功能. 我应该让图片加载器添上一行代码.</p>
+
+</div><div id="wmd-preview-section-96" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">loadImage(  imgAry,  <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  Map.init();<br>  Gamer.init();<br>  Sount.init();<br>})<br></code></pre>
+
+<p>　　可是写这个模块的同事A去了外地旅游. 于是我打电话给他, 喂. 你的loadImage函数在哪, 我能不能改一下, 改了之后有没有副作用. 如你所想, 各种不淡定的事发生了. 如果当初我们能这样写呢:</p>
+
+</div><div id="wmd-preview-section-97" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">loadImage.listen( <span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    Map.init();<br>})<br><br>loadImage.listen( <span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   Gamer.init();<br>})<br><br>loadImage.listen( <span class="hljs-string">'ready'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   Sount.init();<br>})<br></code></pre>
+
+<p>　　loadImage完成之后, 它根本不关心将来会发生什么, 因为它的工作已经完成了. 接下来它只要发布一个信号. <br>
+loadImage.trigger( ”ready’ );</p>
+
+<p>　　那么监听了loadImage的’ready’事件的对象都会收到通知. 就像上个面试的例子. 面试官根本不关心面试者们收到面试结果后会去哪吃饭. 他只负责把面试者的简历搜集到一起. 当面试结果出来时照着简历上的电话挨个通知.</p>
+
+<p>　　说了这么多概念, 来一个具体的实现. 实现过程其实很简单. 面试者把简历扔到一个盒子里， 然后面试官在合适的时机拿着盒子里的简历挨个打电话通知结果.</p>
+
+</div><div id="wmd-preview-section-98" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">Events = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{<br><br>  <span class="hljs-keyword">var</span> listen, log, obj, one, remove, trigger, __this;<br>  obj = {};<br>  __this = <span class="hljs-keyword">this</span>;<br><br>  listen = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( key, eventfn )</span> </span>{  <span class="hljs-comment">//把简历扔盒子, key就是联系方式.</span><br>    <span class="hljs-keyword">var</span> stack, _ref;  <span class="hljs-comment">//stack是盒子</span><br>    stack = ( _ref = obj[key] ) != <span class="hljs-literal">null</span> ? _ref : obj[ key ] = [];<br>    <span class="hljs-keyword">return</span> stack.push( eventfn );<br><br>  };<br><br>  one = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( key, eventfn )</span> </span>{<br>    remove( key );<br>    <span class="hljs-keyword">return</span> listen( key, eventfn );<br>  };<br><br>  remove = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( key )</span> </span>{<br>    <span class="hljs-keyword">var</span> _ref;<br>    <span class="hljs-keyword">return</span> ( _ref = obj[key] ) != <span class="hljs-literal">null</span> ? _ref.length = <span class="hljs-number">0</span> : <span class="hljs-keyword">void</span> <span class="hljs-number">0</span>;<br>  };<br><br>  trigger = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{  <span class="hljs-comment">//面试官打电话通知面试者</span><br>    <span class="hljs-keyword">var</span> fn, stack, _i, _len, _ref, key;<br>    key = <span class="hljs-built_in">Array</span>.prototype.shift.call( <span class="hljs-built_in">arguments</span> ); <br>    stack = ( _ref = obj[ key ] ) != <span class="hljs-literal">null</span> ? _ref : obj[ key ] = [];<br>    <span class="hljs-keyword">for</span> ( _i = <span class="hljs-number">0</span>, _len = stack.length; _i &lt; _len; _i++ ) {<br>    fn = stack[ _i ];<br>    <span class="hljs-keyword">if</span> ( fn.apply( __this,  <span class="hljs-built_in">arguments</span> ) === <span class="hljs-literal">false</span>) {<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    }<br><br>   }<br><br>   <span class="hljs-keyword">return</span> {<br>      listen: listen,<br>      one: one,<br>      remove: remove,<br>      trigger: trigger<br>   }<br><br>}<br></code></pre>
+
+<p>最后用观察者模式来做一个成人电视台的小应用.</p>
+
+<p>//订阅者</p>
+
+</div><div id="wmd-preview-section-99" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> adultTv = Event();<br><br>adultTv .listen(  <span class="hljs-string">'play'</span>,  <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( data )</span></span>{<br><br>   <span class="hljs-built_in">console</span>.log( <span class="hljs-string">"今天是谁的电影"</span> + data.name );<br><br>});<br></code></pre>
+
+<p>//发布者</p>
+
+</div><div id="wmd-preview-section-100" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">adultTv .trigger(  <span class="hljs-string">'play'</span>,  { <span class="hljs-string">'name'</span>: <span class="hljs-string">'麻生希'</span> }  )<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-101" class="wmd-preview-section preview-content">
+
+<h2 id="适配器模式">适配器模式</h2>
+
+<p>　　去年年前当时正在开发dev.qplus.com, 有个存储应用分类id的js文件, 分类id的结构最开始设计的比较笨重. 于是我决定重构它. 我把它定义成一个json树的形式, 大概是这样:</p>
+
+</div><div id="wmd-preview-section-102" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> category = {<br>   music: {<br>id: <span class="hljs-number">1</span>,<br>children: [ , , , , ]<br>   }<br>}<br></code></pre>
+
+<p>　　dev.qplus.com里大概有4，5个页面都调用这个category对象. 春节前我休了1个星期假. 过年来之后发现邮箱里有封邮件, 设计数据库的同学把category..js也重构了一份, 并且其他几个项目里都是用了这份category.js, 我拿过来一看就傻眼了, 和我之前定的数据结构完全不一样. <br>
+当然这是一个沟通上的反面例子. 但接下来的重点是我已经在N个文件里用到了之前我定的category.js. 而且惹上了一些复杂的相关逻辑. 怎么改掉我之前的代码呢. 全部重写肯定是不愿意. 所以现在适配器就派上用场了. <br>
+只需要把同事的category用一个函数转成跟我之前定义的一样.</p>
+
+</div><div id="wmd-preview-section-103" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">my.category = adapterCategory ( afu.category );<br></code></pre>
+
+<p>　　适配器模式的作用很像一个转接口. 本来iphone的充电器是不能直接插在电脑机箱上的, 而通过一个usb转接口就可以了. <br>
+所以, 在程序里适配器模式也经常用来适配2个接口, 比如你现在正在用一个自定义的js库. 里面有个根据id获取节点的方法<code>$id()</code>. 有天你觉得jquery里的$实现得更酷, 但你又不想让你的工程师去学习新的库和语法. 那一个适配器就能让你完成这件事情.</p>
+
+</div><div id="wmd-preview-section-104" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">$id = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( id )</span></span>{<br>  <span class="hljs-keyword">return</span> jQuery( <span class="hljs-string">'#'</span> + id )[<span class="hljs-number">0</span>];<br>}<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-105" class="wmd-preview-section preview-content">
+
+<h2 id="代理模式">代理模式</h2>
+
+<hr>
+
+</div><div id="wmd-preview-section-106" class="wmd-preview-section preview-content">
+
+<h2 id="桥接模式">桥接模式</h2>
+
+<p>　　代理模式的定义是把对一个对象的访问, 交给另一个代理对象来操作. <br>
+举一个例子, 我在追一个MM想给她送一束花，但是我因为我性格比较腼腆，所以我托付了MM的一个好朋友来送。 <br>
+这个例子不是非常好， 至少我们没看出代理模式有什么大的用处，因为追MM更好的方式是送一台宝马。</p>
+
+<p>　　再举个例子，假如我每天都得写工作日报( 其实没有这么惨 ). 我的日报最后会让总监审阅. 如果我们都直接把日报发给 总监 , 那可能 总监 就没法工作了. 所以通常的做法是把日报发给我的组长 ， 组长把所有组员一周的日报都汇总后再发给总监 . <br>
+实际的编程中， 这种因为性能问题使用代理模式的机会是非常多的。比如频繁的访问dom节点, 频繁的请求远程资源. 可以把操作先存到一个缓冲区, 然后自己选择真正的触发时机. <br>
+　　再来个详细的例子，之前我写了一个街头霸王的游戏, 地址在<a href="http://alloyteam.github.com/StreetFighter/" target="_blank">http://alloyteam.github.com/StreetFighter/</a></p>
+
+<p>　　游戏中隆需要接受键盘的事件, 来完成相应动作. <br>
+　　于是我写了一个keyManage类. 其中在游戏主线程里监听keyManage的变化.</p>
+
+</div><div id="wmd-preview-section-107" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> keyMgr = keyManage();<br>keyMgr.listen( <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( keyCode )</span></span>{<br>   <span class="hljs-built_in">console</span>.log( keyCode );<br>});<br></code></pre>
+
+<p>　　图片里面隆正在放升龙拳, 升龙拳的操作是前下前+拳. 但是这个keyManage类只要发生键盘事件就会触发之前监听的change函数.这意味着永远只能取得前，后，前，拳这样单独的按键事件，而无法得到一个按键组合。 <br>
+　　好吧，我决定改写我的keyManage类, 让它也支持传递按键组合. 但是如果我以后写个html5版双截龙，意味着我每次都得改写keyManage. 我总是觉得, 这种函数应该可以抽象成一个更底层的方法, 让任何游戏都可以用上它. <br>
+所以最后的keyManage只负责映射键盘事件. 而隆接受到的动作是通过一个代理对象处理之后的.</p>
+
+</div><div id="wmd-preview-section-108" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> keyMgr = keyManage();<br>keyMgr.listen( <span class="hljs-string">'change'</span>, proxy( <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( keyCode )</span></span>{<br>   <span class="hljs-built_in">console</span>.log( keyCode );  <span class="hljs-comment">//前下前+拳</span><br>)} );<br><br></code></pre>
+
+<p>　　至于proxy里面怎么实现，完全可以自由发挥。 <br>
+　　还有个例子就是在调用ajax请求的时候，无论是各种开源库，还是自己写的Ajax类, 都会给xhr对象设置一个代理. 我们不可能频繁的去操作xhr对象发请求, 而应该是这样.</p>
+
+</div><div id="wmd-preview-section-109" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> request = Ajax.get( <span class="hljs-string">'cgi.xx.com/xxx'</span> );<br>request.send();<br>request.done(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{});<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-110" class="wmd-preview-section preview-content">
+
+<h2 id="外观模式">外观模式</h2>
+
+<p>　　外观模式(门面模式)，是一种相对简单而又无处不在的模式。外观模式提供一个高层接口，这个接口使得客户端或子系统更加方便调用。 <br>
+用一段再简单不过的代码来表示</p>
+
+</div><div id="wmd-preview-section-111" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> getName = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">'svenzeng'</span><br>}<br><span class="hljs-keyword">var</span> getSex = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   <span class="hljs-keyword">return</span> <span class="hljs-string">'man'</span><br>}<br></code></pre>
+
+<p>　　如果你需要分别调用getName和getSex函数. 那可以用一个更高层的接口getUserInfo来调用.</p>
+
+</div><div id="wmd-preview-section-112" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> getUserInfo = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  <span class="hljs-keyword">var</span> info = a() + b();<br>  <span class="hljs-keyword">return</span> info;<br>}<br></code></pre>
+
+<p>　　也许你会问为什么一开始不把getName和getSex的代码写到一起, 比如这样</p>
+
+</div><div id="wmd-preview-section-113" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> getNameAndSex = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">'svenzeng'</span> + <span class="hljs-string">'man'</span>;<br>}<br></code></pre>
+
+<p>　　答案是显而易见的，饭堂的炒菜师傅不会因为你预定了一份烧鸭和一份白菜就把这两样菜炒在一个锅里。他更愿意给你提供一个烧鸭饭套餐。同样在程序设计中，我们需要保证函数或者对象尽可能的处在一个合理粒度，毕竟不是每个人喜欢吃烧鸭的同时又刚好喜欢吃白菜。 <br>
+外观模式还有一个好处是可以对用户隐藏真正的实现细节，用户只关心最高层的接口。比如在烧鸭饭套餐的故事中，你并不关心师傅是先做烧鸭还是先炒白菜，你也不关心那只鸭子是在哪里成长的。</p>
+
+<p>　　最后写个我们都用过的外观模式例子</p>
+
+</div><div id="wmd-preview-section-114" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> stopEvent = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( e )</span></span>{   <span class="hljs-comment">//同时阻止事件默认行为和冒泡</span><br>  e.stopPropagation();<br>  e.preventDefault();<br>}<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-115" class="wmd-preview-section preview-content">
+
+<h2 id="访问者模式">访问者模式</h2>
+
+<hr>
+
+</div><div id="wmd-preview-section-116" class="wmd-preview-section preview-content">
+
+<h2 id="策略模式">策略模式</h2>
+
+<p>　　策略模式的意义是定义一系列的算法，把它们一个个封装起来，并且使它们可相互替换。 <br>
+一个小例子就能让我们一目了然。 <br>
+回忆下jquery里的animate方法.</p>
+
+</div><div id="wmd-preview-section-117" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">$( div ).animate( {<span class="hljs-string">"left: 200px"</span>}, <span class="hljs-number">1000</span>, <span class="hljs-string">'linear'</span> );  <span class="hljs-comment">//匀速运动</span><br>$( div ).animate( {<span class="hljs-string">"left: 200px"</span>}, <span class="hljs-number">1000</span>, <span class="hljs-string">'cubic'</span> );  <span class="hljs-comment">//三次方的缓动</span><br></code></pre>
+
+<p>　　这2句代码都是让div在1000ms内往右移动200个像素. linear(匀速)和cubic(三次方缓动)就是一种策略模式的封装. <br>
+再来一个例子. 上半年我写的dev.qplus.com, 很多页面都会有个即时验证的表单. 表单的每个成员都会有一些不同的验证规则.</p>
+
+<p>　　比如姓名框里面， 需要验证非空，敏感词，字符过长这几种情况。 当然是可以写3个if else来解决，不过这样写代码的扩展性和维护性可想而知。如果表单里面的元素多一点，需要校验的情况多一点，加起来写上百个if else也不是没有可能。 <br>
+　　所以更好的做法是把每种验证规则都用策略模式单独的封装起来。需要哪种验证的时候只需要提供这个策略的名字。就像这样：</p>
+
+</div><div id="wmd-preview-section-118" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">nameInput.addValidata({<br>   notNull: <span class="hljs-literal">true</span>,<br>   dirtyWords: <span class="hljs-literal">true</span>,<br>   maxLength: <span class="hljs-number">30</span><br>})<br></code></pre>
+
+<p>　　而notNull，maxLength等方法只需要统一的返回true或者false，来表示是否通过了验证。</p>
+
+</div><div id="wmd-preview-section-119" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="hljs scilab">validataList = {<br>  notNull: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( value )</span>{</span><br>     <span class="hljs-keyword">return</span> value !== <span class="hljs-string">''</span>;<br>  },<br>  maxLength: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( value, maxLen )</span>{</span><br>     <span class="hljs-keyword">return</span> <span class="hljs-transposed_variable">value.</span><span class="hljs-built_in">length</span>() &gt; maxLen;<br>  }<br>}<br></code></pre>
+
+<p>　　可以看到，各种验证规则很容易被修改和相互替换。如果某天产品经理建议字符过长的限制改成60个字符。那只需要0.5秒完成这次工作。</p>
+
+<hr>
+
+</div><div id="wmd-preview-section-120" class="wmd-preview-section preview-content">
+
+<h2 id="模版方法模式">模版方法模式</h2>
+
+<p>　　模式方法是预先定义一组算法，先把算法的不变部分抽象到父类，再将另外一些可变的步骤延迟到子类去实现。听起来有点像工厂模式( 非前面说过的简单工厂模式 ). <br>
+最大的区别是,工厂模式的意图是根据子类的实现最终获得一种对象. 而模版方法模式着重于父类对子类的控制. <br>
+　　按GOF的描叙，模版方法导致一种反向的控制结构，这种结构有时被称为“好莱坞法则”，即“别找我们，我们找你”。这指的是一个父类调用一个子类的操作，而不是相反。 <br>
+一个很常用的场景是在一个公司的项目中，经常由架构师搭好架构，声明出抽象方法。下面的程序员再去分头重写这些抽象方法。 <br>
+在深入了解之前，容许我先扯远一点。 <br>
+　　作为一个进化论的反对者，假设这个世界是上帝用代码创造的。那么上帝创造生命的时候可能就用到了模版方法模式。看看他是怎么在生命构造器中声明模版方法的：</p>
+
+</div><div id="wmd-preview-section-121" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> Life = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>}<br>Life.prototype.init = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   <span class="hljs-keyword">this</span>.DNA复制();<br>   <span class="hljs-keyword">this</span>.出生();<br>   <span class="hljs-keyword">this</span>.成长();<br>   <span class="hljs-keyword">this</span>.衰老();<br>   <span class="hljs-keyword">this</span>.死亡();<br>}<br><span class="hljs-keyword">this</span>.prototype.DNA复制 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  &amp;*$%&amp;^%^&amp;(&amp;(&amp;(&amp;&amp;(^^(*)  <span class="hljs-comment">//看不懂的代码</span><br>}<br>Life.prototype.出生 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{}<br>Life.prototype.成长 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{}<br>Life.prototype.衰老 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{}<br>Life.prototype.死亡 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{}<br></code></pre>
+
+<p>　　其中DNA复制是预先定义的算法中不变部分. 所有子类都不能改写它. 如果需要我们可以写成protected的类型. <br>
+而其他的函数在父类中会被先定义成一个空函数(钩子). 然后被子类重写，这就是模版方法中所谓的可变的步骤。 <br>
+假设有个子类哺乳动物类继承了Life类.</p>
+
+</div><div id="wmd-preview-section-122" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> Mammal = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>}<br>Mammal.prototype = Life.prototype;   <span class="hljs-comment">//继承Life</span><br></code></pre>
+
+<p>　　然后重写出生和衰老这两个钩子函数.</p>
+
+</div><div id="wmd-preview-section-123" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">Mammal.prototope.出生 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  胎生()<br>}<br>Mammal.prototype.成长 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  <span class="hljs-comment">//再留给子类去实现</span><br>}<br>Mammal.prototope.衰老 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  自由基的过氧化反应()<br>}<br>Life.prototype.死亡 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br> <span class="hljs-comment">//再留给子类去实现</span><br>}<br><span class="hljs-comment">//再实现一个Dog类</span><br><span class="hljs-keyword">var</span> = Dog = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>}<br><span class="hljs-comment">//Dog继承自哺乳动物.</span><br>Dog.prototype = Mammal.prototype;<br><span class="hljs-keyword">var</span> dog = <span class="hljs-keyword">new</span> Dog();<br>dog.init();<br></code></pre>
+
+<p>　　至此，一只小狗的生命会依次经历DNA复制，出生，成长，衰老，死亡这几个过程。这些步骤早在它出生前就决定了。所幸的是，上帝没有安排好它生命的所有细节。它还是能通过对成长函数的重写，来成为一只与众不同的小狗。 <br>
+举个稍微现实点的例子，游戏大厅中的所有游戏都有登录，游戏中，游戏结束这几个过程，而登录和游戏结束之后弹出提示这些函数都是应该公用的。 <br>
+那么首先需要的是一个父类。</p>
+
+</div><div id="wmd-preview-section-124" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> gameCenter = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>}<br>gameCenter.ptototype.init = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  <span class="hljs-keyword">this</span>.login();<br>  <span class="hljs-keyword">this</span>.gameStart();<br>  <span class="hljs-keyword">this</span>.end();<br>}<br>gameCenter.prototype.login= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   <span class="hljs-comment">//do something</span><br>}<br>gameCenter.prototype.gameStart= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   <span class="hljs-comment">//空函数, 留给子类去重写</span><br>}<br>gameCenter.prototype.end= <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  alert ( <span class="hljs-string">"欢迎下次再来玩"</span> );<br>}<br></code></pre>
+
+<p>　　接下来创建一个斗地主的新游戏, 只需要继承gameCenter然后重写它的gameStart函数.</p>
+
+</div><div id="wmd-preview-section-125" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="hljs oxygene"><span class="hljs-keyword">var</span> 斗地主 = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span><span class="hljs-comment">{<br>}</span><br>斗地主.<span class="hljs-title">prototype</span> = <span class="hljs-title">gameCenter</span>.<span class="hljs-title">prototype</span>;</span>  <span class="hljs-comment">//继承</span><br>斗地主.prototype.gameStart = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span><span class="hljs-comment">{<br>  //do something<br>}</span><br><span class="hljs-params">(<span class="hljs-keyword">new</span> 斗地主)</span>.<span class="hljs-title">init</span><span class="hljs-params">()</span>;</span><br></code></pre>
+
+<p>　　这样一局新的游戏就开始了.</p>
+
+<hr>
+
+</div><div id="wmd-preview-section-126" class="wmd-preview-section preview-content">
+
+<h2 id="中介者模式">中介者模式</h2>
+
+<p>　　中介者对象可以让各个对象之间不需要显示的相互引用，从而使其耦合松散，而且可以独立的改变它们之间的交互。 <br>
+打个比方，军火买卖双方为了安全起见，找了一个信任的中介来进行交易。买家A把钱交给中介B，然后从中介手中得到军火，卖家C把军火卖给中介，然后从中介手中拿回钱。一场交易完毕，A甚至不知道C是一只猴子还是一只猛犸。因为中介的存在，A也未必一定要买C的军火，也可能是D，E，F。</p>
+
+<p>　　银行在存款人和贷款人之间也能看成一个中介。存款人A并不关心他的钱最后被谁借走。贷款人B也不关心他借来的钱来自谁的存款。因为有中介的存在，这场交易才变得如此方便。 <br>
+中介者模式和代理模式有一点点相似。都是第三者对象来连接2个对象的通信。具体差别可以从下图中区别。 <br>
+代理模式：</p>
+
+<p>　　中介者模式</p>
+
+<p>　　代理模式中A必然是知道B的一切，而中介者模式中A,B,C对E,F,G的实现并不关心.而且中介者模式可以连接任意多种对象。 <br>
+切回到程序世界里的mvc，无论是j2ee中struts的Action. 还是js中backbone.js和spine.js里的Controler. 都起到了一个中介者的作用. <br>
+拿backbone举例. 一个mode里的数据并不确定最后被哪些view使用. view需要的数据也可以来自任意一个mode. 所有的绑定关系都是在controler里决定. 中介者把复杂的多对多关系, 变成了2个相对简单的1对多关系.</p>
+
+<p>一段简单的示例代码：</p>
+
+</div><div id="wmd-preview-section-127" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> mode1 = Mode.create(),  mode2 = Mode.create();<br><span class="hljs-keyword">var</span> view1 = View.create(),   view2 = View.create();<br><span class="hljs-keyword">var</span> controler1 = Controler.create( mode1, view1, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  view1.el.find( <span class="hljs-string">''</span>div<span class="hljs-string">' ).bind( '</span><span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    <span class="hljs-keyword">this</span>.innerHTML = mode1.find( <span class="hljs-string">'data'</span> );<br>  } )<br>})<br><span class="hljs-keyword">var</span> controler2 = Controler.create( mode2 view2, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  view1.el.find( <span class="hljs-string">''</span>div<span class="hljs-string">' ).bind( '</span><span class="hljs-string">'click'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    <span class="hljs-keyword">this</span>.innerHTML = mode2.find( <span class="hljs-string">'data'</span> );<br>  } )<br>})<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-128" class="wmd-preview-section preview-content">
+
+<h2 id="迭代器模式">迭代器模式</h2>
+
+<p>　　迭代器模式提供一种方法顺序访问一个聚合对象中各个元素，而又不需要暴露该方法中的内部表示。 <br>
+js中我们经常会封装一个each函数用来实现迭代器。 <br>
+array的迭代器：</p>
+
+</div><div id="wmd-preview-section-129" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">forEach = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( ary, fn )</span></span>{  <br>    <span class="hljs-keyword">for</span> ( <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>, l = ary.length; i &lt; l; i++ ){<br>        <span class="hljs-keyword">var</span> c = ary[ i ];<br>        <span class="hljs-keyword">if</span> ( fn.call( c, i , c ) === <span class="hljs-literal">false</span> ){<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        }<br>    }<br>}<br><br>forEach( [ <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span> ], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( i, n )</span></span>{<br>  alert ( i );<br>})<br></code></pre>
+
+<p>　　obejct的迭代器:</p>
+
+</div><div id="wmd-preview-section-130" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">forEach = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( obj, fn )</span></span>{ <br>    <span class="hljs-keyword">for</span> ( <span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> obj ){<br>        <span class="hljs-keyword">var</span> c = obj[ i ];<br>        <span class="hljs-keyword">if</span> ( fn.call( c, i, c ) === <span class="hljs-literal">false</span> ){<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        }<br>    }<br>}<br><br>forEach( {<span class="hljs-string">"a"</span>: <span class="hljs-number">1</span>,<span class="hljs-string">"b"</span>: <span class="hljs-number">2</span>}, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( i, n )</span></span>{<br>  alert ( i );<br>})<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-131" class="wmd-preview-section preview-content">
+
+<h2 id="组合模式">组合模式</h2>
+
+<p>　　组合模式又叫部分-整体模式，它将所有对象组合成树形结构。使得用户只需要操作最上层的接口，就可以对所有成员做相同的操作。 <br>
+一个再好不过的例子就是jquery对象，大家都知道1个jquery对象其实是一组对象集合。比如在这样一个HTML页面</p>
+
+</div><div id="wmd-preview-section-132" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="hljs apache"><span class="hljs-tag">&lt;body&gt;</span><br>  <span class="hljs-tag">&lt;div&gt;</span><br>     <span class="hljs-tag">&lt;span&gt;</span><span class="hljs-tag">&lt;/span&gt;</span><br>     <span class="hljs-tag">&lt;span&gt;</span><span class="hljs-tag">&lt;/span&gt;</span><br>  <span class="hljs-tag">&lt;/div&gt;</span><br><span class="hljs-tag">&lt;/body&gt;</span><br></code></pre>
+
+<p>　　我们想取消所有节点上绑定的事件, 需要这样写</p>
+
+</div><div id="wmd-preview-section-133" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> allNodes = <span class="hljs-built_in">document</span>.getElementsByTagName(<span class="hljs-string">"*"</span>);<br><span class="hljs-keyword">var</span> len = allNodes.length;<br><span class="hljs-keyword">while</span>( len-- ){<br>  allNodes.unbind(<span class="hljs-string">"*"</span>);<br>}<br></code></pre>
+
+<p>　　但既然用了jquery，就肯定不会再做这么搓的事情。我们只需要<code>$( 'body' ).unbind( '*' )</code>; <br>
+当每个元素都实现unbind接口, 那么只需调用最上层对象$( ‘body’ )的unbind, 便可自动迭代并调用所有组合元素的unbind方法. <br>
+再来个具体点的例子， 还是dev.qplus.com这个网站的即时验证表单。</p>
+
+<p>　　注意下面那个修改资料的按钮，如果有任意一个field的验证没有通过，修改资料的按钮都将是灰色不可点的状态。 这意味着我们重新填写了表单内容后, 都得去校验每个field, 保证它们全部OK. <br>
+这代码不难实现.</p>
+
+</div><div id="wmd-preview-section-134" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">if</span> ( nameField.validata() &amp;&amp; idCard.validata() &amp;&amp; email.validata() &amp;&amp; phone.validata() ){<br>   alert ( <span class="hljs-string">"验证OK"</span> );<br>}<br></code></pre>
+
+<p>　　似乎我们用一个外观模式也能勉强解决这里条件分支堆砌的问题，但真正的问题是，我们并不能保证表单里field的数量，也许明天产品经理就让你删掉一个或者增加两个.那么这样的维护方式显然不能被接受. <br>
+更好的实现是有一个form.validata函数, 它负责把真正的validata操作分发给每个组合对象. <br>
+form.validata函数里面会依次遍历所有需要校验的field. 若有一个field校验未通过, form.validata都会返回false. 伪代码如下.</p>
+
+</div><div id="wmd-preview-section-135" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">form.validata = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>  forEach( fields, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( index, field )</span></span>{<br>    <span class="hljs-keyword">if</span> ( field.validata() === <span class="hljs-literal">false</span>  ){<br>       <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    }<br>  })<br>  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>}<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-136" class="wmd-preview-section preview-content">
+
+<h2 id="备忘录模式">备忘录模式</h2>
+
+<p>　　备忘录模式在js中经常用于数据缓存. 比如一个分页控件, 从服务器获得某一页的数据后可以存入缓存。以后再翻回这一页的时候，可以直接使用缓存里的数据而无需再次请求服务器。 <br>
+实现比较简单，伪代码：</p>
+
+</div><div id="wmd-preview-section-137" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript"><span class="hljs-keyword">var</span> Page = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>   <span class="hljs-keyword">var</span> page = <span class="hljs-number">1</span>,<br>      cache = {},<br>      data;<br>   <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( page )</span></span>{<br>      <span class="hljs-keyword">if</span> ( cache[ page ] ){<br>           data =  cache[ page ];<br>           render( data );<br>      }<span class="hljs-keyword">else</span>{<br>           Ajax.send( <span class="hljs-string">'cgi.xx.com/xxx'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( data )</span></span>{<br>               cache[ page ] = data;<br>               render( data );<br>           })<br>      }<br>    }<br>}()<br></code></pre>
+
+<hr>
+
+</div><div id="wmd-preview-section-138" class="wmd-preview-section preview-content">
+
+<h2 id="职责链模式">职责链模式</h2>
+
+<p>　　职责链模式是一个对象A向另一个对象B发起请求，如果B不处理，可以把请求转给C，如果C不处理，又可以把请求转给D。一直到有一个对象愿意处理这个请求为止。 <br>
+　　 <br>
+　　打个比方，客户让老板写个php程序。老板肯定不写，然后老板交给了部门经理。部门经理不愿意写，又交给项目经理。项目经理不会写，又交给程序员。最后由码农来完成。</p>
+
+<p>在这个假设里， 有几条职责链模式的特点。</p>
+
+<ul><li>1  老板只跟部门经理打交道，部门经理只联系项目经理，项目经理只找码农的麻烦。</li>
+<li>2 如果码农也不写，这个项目将会流产。</li>
+<li><p>3 客户并不清楚这个程序最后是由谁写出来的。</p>
+
+<p>　　js中的事件冒泡就是作为一个职责链来实现的。一个事件在某个节点上被触发，然后向根节点传递， 直到被节点捕获。</p></li>
+</ul>
+
+<hr>
+
+</div><div id="wmd-preview-section-139" class="wmd-preview-section preview-content">
+
+<h2 id="享元模式">享元模式</h2>
+
+<p>　　享元模式主要用来减少程序所需的对象个数. 有一个例子, 我们这边的前端同学几乎人手一本《javascript权威指南》. 从省钱的角度讲, 大约三本就够了. 放在部门的书柜里, 谁需要看的时候就去拿, 看完了还回去. 如果同时有4个同学需要看, 此时再去多买一本. <br>
+在webqq里面, 打开QQ好友列表往下拉的时候，会为每个好友创建一个div( 如果算上div中的子节点, 还远不只1个元素 ).</p>
+
+<p>　　如果有1000个QQ好友, 意味着如果从头拉到尾, 会创建1000个div, 这时候有些浏览器也许已经假死了. 这还只是一个随便翻翻好友列表的操作. <br>
+所以我们想到了一种解决办法, 当滚动条滚动的时候, 把已经消失在视线外的div都删除掉. 这样页面可以保持只有一定数量的节点. 问题是这样频繁的添加与删除节点, 也会造成很大的性能开销, 而且这种感觉很不对味. <br>
+　　现在享元模式可以登场了. 顾名思义, 享元模式可以提供一些共享的对象以便重复利用. 仔细看下上图, 其实我们一共只需要10个div来显示好友信息,也就是出现在用户视线中的10个div.这10个div就可以写成享元. <br>
+伪代码如下.</p>
+
+</div><div id="wmd-preview-section-140" class="wmd-preview-section preview-content">
+
+<pre class="prettyprint hljs-dark"><code class="language-js hljs javascript">  <span class="hljs-keyword">var</span> getDiv = (<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>    <span class="hljs-keyword">var</span> created = [];<br>    <span class="hljs-keyword">var</span> create = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>          <span class="hljs-keyword">return</span> <span class="hljs-built_in">document</span>.body.appendChild( <span class="hljs-built_in">document</span>.createElement( <span class="hljs-string">'div'</span> ) );<br>    }<br>    <span class="hljs-keyword">var</span> get = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{<br>         <span class="hljs-keyword">if</span> ( created.length ){<br>              <span class="hljs-keyword">return</span> created.shift();<br>          }<span class="hljs-keyword">else</span>{<br>              <span class="hljs-keyword">return</span> create();<br>          }<br>     }<br>     <span class="hljs-comment">/* 一个假设的事件，用来监听刚消失在视线外的div，实际上可以通过监听滚动条位置来实现 */</span><br>     userInfoContainer.disappear(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">( div )</span></span>{<br>          created.push( div );<br>     })<br> })()<br><span class="hljs-keyword">var</span> div = getDiv();<br>div.innerHTML = <span class="hljs-string">"${userinfo}"</span>;<br></code></pre>
+
+<p>　　原理其实很简单, 把刚隐藏起来的div放到一个数组中, 当需要div的时候, 先从该数组中取, 如果数组中已经没有了, 再重新创建一个. 这个数组里的div就是享元, 它们每一个都可以当作任何用户信息的载体. <br>
+当然这只是个示例,实际的情况要复杂一些, 比如快速拖动的时候, 我们可能还得为节点设置一个缓冲区.</p>
+
+<hr>
+
+</div><div id="wmd-preview-section-141" class="wmd-preview-section preview-content">
+
+<h2 id="状态模式">状态模式</h2>
+
+<hr></div><div id="wmd-preview-section-footnotes" class="preview-content"></div></div></body></html>
