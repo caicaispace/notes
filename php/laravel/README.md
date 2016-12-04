@@ -1,4 +1,5 @@
 #laravel
+
 ##定时器
 
 ### crontab
@@ -6,7 +7,7 @@
 - crontab 检测
 
 1.创建 `toLog.php` 文件
-```
+```php
 <?php
 	file_put_contents('/home/www/laravel/run.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
 ?>
@@ -20,7 +21,7 @@ crontab -e
 
 3.复制以下代码到 crontab
 
-```
+```crontab
 * * * * * /usr/local/php/bin/php /home/www/laravel/toLog.php
 ```
 4.运行命令（查看 run.log 文件）
@@ -33,6 +34,6 @@ tail -f run.log
 
 复制以下代码到 crontab
 
-```
+```crontab
 * * * * * /usr/local/php/bin/php /home/www/laravel/artisan schedule:run 1>> /dev/null 2>&1
 ```
