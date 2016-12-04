@@ -37,3 +37,28 @@ tail -f run.log
 ```crontab
 * * * * * /usr/local/php/bin/php /home/www/laravel/artisan schedule:run 1>> /dev/null 2>&1
 ```
+
+- crontab 调用 shell（暂不可用）
+
+```crontab
+#Borrowed from anacron
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+#End borrowed from anacron
+* * * * * root /usr/bin/bash /home/www/laravel/crontab.sh
+```
+
+- 创建文件 `crontab.sh` （windows下要在 linux 中 touch 文件，保证编码正确）
+
+```shell
+#!/bin/bash
+step=2
+
+for (( i = 0; i < 10; i=(i+step) )); do
+	echo 'yes'
+	php '/home/www/laravel/artisan' schedule:run
+	sleep $step
+done
+
+exit 0
+```
