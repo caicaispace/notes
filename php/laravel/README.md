@@ -15,13 +15,18 @@
 2.运行命令 crontab
 
 ```
-	crontab -e
+crontab -e
 ```
 
 3.复制以下代码到 crontab
 
 ```
 * * * * * /usr/local/php/bin/php /home/www/laravel/toLog.php
+```
+4.查看 run.log 文件
+
+```
+tail -f run.log
 ```
 
 - 定时执行 laravel artisan 任务（每隔 60 秒执行一次）
