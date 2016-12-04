@@ -12,7 +12,7 @@
 ?>
 ```
 
-2.运行命令 crontab
+2.运行命令（打开 crontab）
 
 ```
 crontab -e
@@ -23,7 +23,7 @@ crontab -e
 ```
 * * * * * /usr/local/php/bin/php /home/www/laravel/toLog.php
 ```
-4.查看 run.log 文件
+4.运行命令（查看 run.log 文件）
 
 ```
 tail -f run.log
