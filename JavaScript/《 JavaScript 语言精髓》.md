@@ -1,18 +1,13 @@
-#javascript 语言精髓
-@[js|学习笔记]
+# javascript 语言精髓
 
 [TOC]
 
----
-##第一章 —— 精华（Good Parts）
+## 第一章 —— 精华（Good Parts）
 
----
-##第二章 —— 语法（Grammar）
+## 第二章 —— 语法（Grammar）
 
----
-##第三章 —— 对象（Objects）
+## 第三章 —— 对象（Objects）
 
----
 
 >**JavaScript** 的简单数据类型包括数字、字符串、布尔值 ( `true` 和`false`)、`null` 值和`undefined`值。其他所有的值都是对象。数字、字符串和布尔值“貌似”对象，因为它们拥有方法，但它们是不可变的。**JavaScript** 中的对象是可变的键控集合`(keyed collections)`。在 **JavaScript** 中，数组是对象，函数是对象，正则表达式是对象，当然，对象自然也是对象。
 
@@ -51,7 +46,7 @@ var filght = {
 }
 ```
 
-###检索（Retrieval）
+### 检索（Retrieval）
 >要检索对象里包含的值，可以采用在`[]`后缀中括住一个字符串表达式的方式。如果字符串表达式是一个字符串字面量，而且它是一个合法的 **JavaScript** 标识符且不是保留字，那么也可以用**`.`**表示法代替。优先考虑使用**`.`**表示法，因为它更紧凑且可读性更好。
 
 ```js
@@ -78,7 +73,7 @@ flight.equipment.model 						// throw "TypeError"
 flight.equipment && flight.equipment.model 	// undefined
 ```
 
-###更新（Update）
+### 更新（Update）
 
 >对象里的值可以通过赋值语句来更新。如果属性名已经存在于对象里，那么这个属性的值就会被替换。
 
@@ -95,7 +90,7 @@ flight.equipment = {
 flight.status = 'overdue'
 ```
 
-###引用（Reference）
+### 引用（Reference）
 >对象通过引用来传递。它们永远不会被复制:
 
 ```js
@@ -109,7 +104,7 @@ var a = {},b = {}, c = {};
 a = b = c = {};
 // a、b 和 c 都引用同一个空对象
 ```
-###原型（Prototype）
+### 原型（Prototype）
 
 >每个对象都连接到一个原型对象，并且它可以从中继承属性。所有通过对象字面量创建的对象都连接到。`Object.prototype`，它是 **JavaScript** 中的标配对象。
 
@@ -144,7 +139,7 @@ another_stooge.profession // 'actor'
 ```
 >我们将会在第6章中看到更多关于原型链的内容。
 
-###反射（Reflection）
+### 反射（Reflection）
 >检查对象并确定对象有什么属性是很容易的事情，只要试着去检索该属性并验证取得的值。`typeof`操作符对确定属性的类型很有帮助:
 ```js
 typeof flight.number 	// 'number'
@@ -168,7 +163,7 @@ flight.hasOwnProperty('number');		// true
 flight.hasOwnProperty('constructor'); 	// false
 ```
 
-###枚举（Enumeration）
+### 枚举（Enumeration）
 >`for in`语句可用来遍历一个对象中的所有属性名。该枚举过程将会列出所有的属性 —— 包括函数和你可能不关心的原型中的属性 —— 所以有必要过滤掉那些你不想要的值。最为常用的过滤器是`hasOwnProperty`方法，以及使用`typeof`来排除函数
 
 
@@ -198,7 +193,7 @@ for(i=0; i<properties.length; i += 1){
 
 >通过使用中的属性，`for`而不是`for in`，可以得到我们想要的属性，而不用担心可能发掘出原型链并且我们按正确的顺序取得了它们的值。
 
-###删除（Delete）
+### 删除（Delete）
 
 >`delete`运算符可以用来删除对象的属性。如果对象包含该属性，那么该属性就会被移除。
 
@@ -214,7 +209,7 @@ delete another_stooge.nickname;
 
 another_stooge.nickname // 'Curly'
 ```
-###减少全局变量污染（Global Abandonment）
+### 减少全局变量污染（Global Abandonment）
 
 >**JavaScript** 可以很随意地定义全局变量来容纳你的应用的所有资源。遗憾的是，全局变量削弱了程序的灵活性，应该避免使用。
 
@@ -248,12 +243,12 @@ MYAPP.flight = {
 
 
 ---
-##第四章 —— 函数（Function）
+## 第四章 —— 函数（Function）
 >**JavaScript** 设计得最出色的就是它的函数的实现。它几乎接近于完美。但是，想必你也能预料到，**JavaScript** 的函数也存在瑕疵。
 
 >函数包含一组语句，它们是 **JavaScript** 的基础模块单元，用于代码复用、信息隐藏和组合调用。函数用于指定对象的行为。一般来说，所谓编程，就是将一组需求分解成一组函数与数据结构的技能。
 
-###函数对象（Function Objects）
+### 函数对象（Function Objects）
 >**JavaScript** 中的函数就是对象。对象是 **“名/值”** 对的集合并拥有一个连到原型对象的隐藏连接。对象字面量产生的对象连接到`Object.prototype`。函数对象连接到`Function.prototype`（该原型对象本身连接到`Object.prototype`。每个函数在创建时会附加两个隐藏属性：**函数的上下文和实现函数行为的代码**
 
 - `函数的上下文和实现函数行为的代码`：**JavaScript** 创建一个函数时象时，会给该对象设呈一个**“调用”**属性。当 **JavaScript** 调用一个函数时，可理解为调用此函数的“调用”属性。详细的描述请参阅 ECMAScript 规范的“13.2  Creating Function Objects" 
@@ -265,7 +260,7 @@ MYAPP.flight = {
 
 >函数的与众不同之处在于它们可以被调用。
 
-###函数字面量（Function Literal）
+### 函数字面量（Function Literal）
 
 >函数对象通过函数字面量来创建:
 ```js
@@ -286,12 +281,12 @@ var add = function (a, b){
 
 >函数字面量可以出现在任何允许表达式出现的地方。函数也可以被定义在其他函数中。一个内部函数除了可以访问自己的参数和变量，同时它也能自由访问把它嵌套在其中的父函数的参数与变量。通过函数字面量创建的函数对象包含一个连到外部上下文的连接。这被称为闭包 **(closure)**。它是 **JavaScript** 强大表现力的来源。
 
-###调用（Invocation）
+### 调用（Invocation）
 >调用一个函数会暂停当前函数的执行，传递控制权和参数给新函数。除了声明时定义的形式参数，每个函数还接收两个附加的参数:`this`和`arguments`。参数`this`在面向对象编程中非常重要，它的值取决于调用的模式。在 **JavaScript** 中一共有 4 种调用模式:方法调用模式、函数调用模式、构造器调用模式和`apply`调用模式。这些模式在如何初始化关键参数`this`上存在差异。
 
 >调用运算符是跟在任何产生一个函数值的表达式之后的一对圆括号。圆括号内可包含零个或多个用逗号隔开的表达式。每个表达式产生一个参数值。每个参数值被赋予函数声明时定义的形式参数名。当实际参数`(arguments)`的个数与形式参数`(parameters)`的个数不匹配时，不会导致运行时错误。如果实际参数值过多了，超出的参数值会被忽略。如果实际参数值过少，缺失的值会被替换为`undefined`。对参数值不会进行类型检查:任何类型的值都可以被传递给任何参数。
 
-####方法调用模式（The Method Invocation Pattern）
+#### 方法调用模式（The Method Invocation Pattern）
 
 >当一个函数被保存为对象的一个属性时，我们称它为一个方法。当一个方法被调用时，`this`被绑定到该对象。如果调用表达式包含一个提取属性的动作（即包含一个**`.`**点表达式或`[subscript]`下标表达式），那么它就是被当做一个方法来调用。
 
@@ -316,7 +311,7 @@ console.log(myObject.value); // 3
 ```
 >方法可以使用`this`。访问自己所属的对象，所以它能从对象中取值或对对象进行修改。`this` 到对象的绑定发生在调用的时候。这个“超级”延迟绑定`(very late binding)`使得函数可以对`this`。高度复用。通过`this`可取得它们所属对象的上下文的方法称为公共方法`(public method)`。
 
-####函数调用模式（The Function Invocation Pattern）
+#### 函数调用模式（The Function Invocation Pattern）
 
 >当一个函数并非一个对象的属性时，那么它就是被当做一个函数来调用的:
 ```js
@@ -343,7 +338,7 @@ myObject.double();
 console.log(myObject.value); // 6
 ```
 
-####构造器调用模式（The Construotor Invocation Pattern）
+#### 构造器调用模式（The Construotor Invocation Pattern）
 
 >**JavaScript** 是一门基于原型继承的语言。这意味着对象可以直接从其他对象继承属性。该语言是无类型的。
 
@@ -427,7 +422,7 @@ console.log(typeof obj_2);
 
 >我不推荐使用这种形式的构造器函数。在下一章中我们会看到更好的替代方式。
 
-####Apply调用模式（The Apply Invocation Pattern）
+#### Apply调用模式（The Apply Invocation Pattern）
 
 >因为 **JavaScript** 是一门函数式的面向对象编程语言，所以函数可以拥有方法。
 
@@ -454,7 +449,7 @@ console.log(status);
 ```
 
 
-###参数 （arguments）
+### 参数 （arguments）
 
 >当函数被调用时，会得到一个“免费”配送的参数，那就是`arguments`数组。函数可以通过此参数访问所有它被调用时传递给它的参数列表，包括那些没有被分配给函数声明时定义的形式参数的多余参数。这使得编写一个**无须指定参数个数的函数成为可能**:
 ```js
@@ -487,7 +482,7 @@ console.log(sum(4,8,15,16,23,42)); //108
 >如果函数调用时在前面加上了`new`前缀，且返回值不是一个对象，则返回**`this`(该新对象)**。
 
 
-###异常（Exceptions）
+### 异常（Exceptions）
 
 >JavaScript 提供了一套异常处理机制。异常是干扰程序的正常流程的不寻常 ( 但并非完全是出乎意料的 ) 的事故。当发现这样的事故时，你的程序应该抛出一个异常
 
@@ -523,7 +518,7 @@ try_it();
 
 >一个 `try` 语句只会有一个捕获所有异常的 `catch` 代码块。如果你的处理手段取决于异常的类型，那么异常处理器必须检查异常对象的name属性来确定异常的类型。
 
-###扩展类型的功能（Augmenting Types）
+### 扩展类型的功能（Augmenting Types）
 
 >JavaScript 允许给语言的基本类型扩充功能。在第3章中，我们已经看到，通过给 `object.prototype` 添加方法，可以让该方法对所有对象都可用。这样的方式对函数、数组、字符串、数字、正则表达式和布尔值同样适用。
 
@@ -574,7 +569,7 @@ Function.prototype.method = function(name, func){
 >另一个要注意的就是`for in`语句用在原型上时表现很糟糕。我们在第3章已经看到了几个减轻这个问题的影响的办法:我们可以使用`hasOwnProperty`方法筛选出继承而来的属性，或者我们可以查找特定的类型。
 
 
-###递归（Recursion）
+### 递归（Recursion）
 
 >递归函数就是会直接或间接地调用自身的一种函数。递归是一种强大的编程技术，它把一个问题分解为一组相似的子问题，每一个都用一个 **寻常解** 解决。一般来说，一个递归函数调用自身去解决它的子问题。
 
@@ -637,7 +632,7 @@ var factorial = function factorial(i,a) {
 console.log(factorial(4)); // 24
 ```
 
-###作用域（Scope）
+### 作用域（Scope）
 
 >在编程语言中，作用域控制着变量与参数的可见性及生命周期。对程序员来说这是一项重要的服务，因为它减少了名称冲突，并且提供了自动内存管理。
 
@@ -664,7 +659,7 @@ var foo=function(){
 
 >很多现代语言都推荐尽可能延迟声明变量。而用在 JavaScript 上的话却会成为糟糕的建议，因为它缺少块级作用域。所以，最好的做法是在函数体的顶部声明函数中可能用到的所有变量。
 
-###闭包（Cuosure）
+### 闭包（Cuosure）
 
 >作用域的好处是内部函数可以访问定义它们的外部函数的参数和妾量 （ 除了`this` 和 `arguments`）。这太美妙了。
 
@@ -778,7 +773,7 @@ var add_the_handlers = function(nodes){
 
 >避免在循环中创建函数，它可能只会带来无谓的计算，还会引起混淆，正如上面那个糟糕的例子。我们可以先在循环之外创建一个辅助函数，让这个辅助函数再返回一个绑定了当前`i`值的函数，这样就不会导致混淆了。
 
-###回调（Callbacks）
+### 回调（Callbacks）
 
 >函数使得对不连续事件的处理变得更容易。例如，假定有这么一个序列，由用户交互行为触发，向服务器发送请求，最终显示服务器的响应。最自然的写法可能会是这样的:
 ```js
@@ -799,7 +794,7 @@ send_request_asynchronously(request, function (response){
 ```
 >我们传递一个函数作为参数给它就会被调用。**send_request_asynchronously** 函数，一旦接收到响应
 
-###模块（Module）
+### 模块（Module）
 
 >我们可以使用函数和闭包来构造模块。模块是一个提供接口却隐藏状态与实现的函数或对象。通过使用函数产生模块，我们几乎可以完全摒弃全局变量的使用，从而缓解这个 **JavaScript** 的最为糟糕的特性之一所带来的影响。
 
@@ -890,7 +885,7 @@ console.log(unique);
 
 >如果我们把 **seqer.gensym** 作为一个值传递给第三方函数，那个函数能用它产生唯一字符串，但却不能通过它来改变`prefix`或`seq`的值。
 
-###级联（Cascade）
+### 级联（Cascade）
 
 >有一些方法没有返回值。例如，一些设置或修改对象的某个状态却不返回任何值的方法就是典型的例子。如果我们让这些方法返回`this`而不是`undefined`，就可以启用级联。在一个级联中，我们可以在单独一条语句中依次调用同一个对象的很多方法。一个启用级联的 **Ajax** 类库可能允许我们以这样的形式去编码:
 
@@ -920,7 +915,7 @@ getElement('myBoxDiv')
 
 >在这个例子中，**getElement** 函数产生一个对应于`id="myBoxDiv"`的 **DOM** 元素且给其注人了其他功能的对象。该方法允许我们移动元素，修改它的尺寸和样式，并添加行为。这些方法每一个都返回该对象，所以每次调用返回的结果可以被下一次调用所用。级联技术可以产生出极富表现力的接口。它也能给那波构造 **“全能”** 接口的热潮降降温，一个接口没必要一次做太多事情。
 
-###柯里化（Curry）
+### 柯里化（Curry）
 - **`柯里化`**：柯里化，也常译为 “局部套用”，是把多参数函数转换为一系列单参数函数并进行调用’的套的技术。这项技术以数学家  Haskell Curry （Haskell 编程语言也是以该数学家命名）更多内容请参考 [http://zh.wikipedia.org/wiki/柯里化](http://zh.wikipedia.org/wiki/柯里化)。本书的上一版中译为 “套用”，再版采用开发人员更为认可的 “柯里化” 的翻译。
 
 >函数也是值，从而我们可以用有趣的方式去操作函数值。柯里化允许我们把函数与传递给它的参数相结合，产生出一个新的函数。
@@ -957,7 +952,7 @@ Function.method('curry',function(){
 
 ---
 
-###记忆（Memoization）
+### 记忆（Memoization）
 >函数可以将先前操作的结果记录在某个对象里，从而避免无谓的重复运算。这种优化被称为 **记忆** (memoization)。 **JavaScrit** 的对象和数组要实现这种优化是非常方便的。
 
 - **`记忆`**：在计算机领域，记忆 ( memoization ) 是主要用于加速程序计算的一种优化技术，它使得函数避免重复演算之前已被处理的愉入，而返回已缓存的结果 —— 摘自 [http://en.wikipedia.org/wiki/Memoization](http://en.wikipedia.org/wiki/Memoization)
@@ -1063,7 +1058,7 @@ var factorial = memoizer([1,1].function(recur,n){
 });
 ```
 ---
-##第五章 —— 继承（Inheritance）
+## 第五章 —— 继承（Inheritance）
 
 >在大多数编程语言中，继承都是一个重要的主题。
 
@@ -1076,7 +1071,7 @@ var factorial = memoizer([1,1].function(recur,n){
 >在基于类的语言中，对象是类的实例，并且类可以从另一个类继承。JavaScript是一门基于原型的语言，这意味着对象直接从其他对象继承。
 
 
-###伪类（Pseudoclassical）
+### 伪类（Pseudoclassical）
 >**JavaScript** 的原型存在着诸多矛盾。它的某些复杂的语法看起来就像那些基于类的语言，这些语法问题掩盖了它的原型机制。它不直接让对象从其他对象继承，反而插入了一个多余的间接层：**通过构造器函数产生对象**。
 
 >当一个函数对象被创建时，Function构造器产生的函数对象会运行类似这样的一些代码:
@@ -1157,7 +1152,7 @@ var name = myCat.get_name(); // 'meow Henrietta meow'
 
 >“伪类”形式可以给不熟悉 **JavaScript** 的程序员提供便利，但它也隐藏了该语言的真实的本质。借鉴类的表示法可能误导程序员去编写过于深入与复杂的层次结构。许多复杂的类层次结构产生的原因就是静态类型检查的约束。**JavaScript** 完全摆脱了那些约束。在基于类的语言中，类继承是代码重用的唯一方式。而 **JavaScript** 有着更多且更好的选择。
 
-###对象说明符（Object Specifiers）
+### 对象说明符（Object Specifiers）
 
 >有时候，构造器要接受一大串参数。这可能令人烦恼，因为要记住参数的顺序非常困难。在这种情况下，如果我们在编写构造器时让它接受一个简单的对象说明符，可能会更加友好。那个对象包含了将要构建的对象规格说明。所以，与其这样写：
 ```js
@@ -1177,7 +1172,7 @@ var myObject = maker({
 
 >当与JSON(参见附录E)一起工作时，这种形式还可以有一个间接的好处。JSON文本只能描述数据，但有时数据表示的是一个对象，把该数据与它的方法关联起来是有用的。如果构造器取得一个对象说明符，就能让它轻松实现，因为我们可以简单地把JSON对象传递给构造器，而它将返回一个构造完全的对象。
 
-###原型（Prototype）
+### 原型（Prototype）
 
 
 >在一个纯粹的原型模式中，我们会摒弃类，转而专注于对象。基于原型的继承相比基于类的继承在概念上更为简单:一个新对象可以继承一个旧对象的属性。也许你对此感到陌生，但它真的很容易理解。你通过构造一个有用的对象开始，接着可以构造更多和那个对象类似的对象。这就可以完全避免把一个应用拆解成一系列嵌套抽象类的分类过程。
@@ -1236,7 +1231,7 @@ var block = function(){
 	scope = oldScope;
 };
 ```
-###函数化（Functional）
+### 函数化（Functional）
 >迄今为止，我们所看到的继承模式的一个弱点就是没法保护隐私。对象的所有属性都是可见的。我们无法得到私有变量和私有函数。有时候这样没关系，但有时候却是大麻烦。遇到这些麻烦的时候，一些无知的程序员接受了一种伪装私有**（pretend privacy）**的模式。如果想构造一个私有属性，他们就给它起一个怪模怪样的名字，并且希望其他使用代码的用户假装看不到这些奇怪的成员。幸运的是，我们有一个更好的选择，那就是应用模块模式。
 
 >我们从构造一个生成对象的函数开始。我们以小写字母开头来命名它，因为它并不需要使用`new`前缀。该函数包括 **4** 个步骤。
@@ -1365,7 +1360,7 @@ var name = myCoolCat.get_name();
   
 >一个持久性的对象不会被入侵。访问一个持久性的对象时，除非有方法授权，否则攻击者不能访问对象的内部状态。
 
-###部件（Parts）
+### 部件（Parts）
 >我们可以从一套部件中把对象组装出来。例如，我们可以构造一个给任何对象添加简单事件处理特性的函数。它会给对象添加一个`on`方法、一个`fire`方法和一个私有的事件注册表对象:
 ```js
 var eventuality = fuction (that){
@@ -1430,11 +1425,12 @@ var eventuality = fuction (that){
 
 >如果我们想要`eventuality`访问该对象的私有状态，可以把私有成员集`my`传递给它。
 
-##第六章 —— 数组（Arrays）
+## 第六章 —— 数组（Arrays）
 >数组是一段线性分配的内存，它通过整数计算偏移并访问其中的元素。数组是一种性能出色的数据结构。不幸的是，**JavaScript** 没有像此类数组一样的数据结构。
 
 >作为替代，**JavaScript** 提供了一种拥有一些类数组 **(array-like)** 特性的对象。它把数组的下标转变成字符串，用其作为属性。它明显地比一个真正的数组慢，但它使用起来更方便。它的属性的检索和更新的方式与对象一模一样，只不过多一个可以用整数作为属性名的特性。数组有自己的字面量格式。数组也有一套非常有用的内置方法，我将在第8章描述它们。
-###数组字面量（Array Literals）
+
+### 数组字面量（Array Literals）
 >数组字面量提供了一种非常方便地创建新数组的表示法。一个数组字面量是在一对方括号中包围零个或多个用逗号分隔的值的表达式。数组字面量允许出现在任何表达式可以出现的地方。数组的第一个值将获得属性名 '0'，第二个值将获得属性名 '1'，依此类推：
 
 ```js
@@ -1462,7 +1458,7 @@ var numbers_object = {
 
 >在大多数语言中，一个数组的所有元素都要求是相同的类型。**JavaScript** 允许数组包含任意混合类型的值：
 
-###长度（Length）
+### 长度（Length）
 >每个数组都有一个`length`属性。和大多数其他语言不同，**JavaScript** 数组的`length`是没有上界的。如果你用大于或等于当前`length`的数字作为下标来存储一个元素，那么`length`值会被增大以容纳新元素，不会发生数组越界错误。
 
 >`length`属性的值是这个数组的最大整数属性名加上 1 。它不一定等于数组里的属性的个数：
@@ -1489,7 +1485,7 @@ numbers[numbers .length] = 'shi';
 nunmbers.push('go');
 //numbers是['zero','one','twoshi','go']
 ```
-###删除（Delete）
+### 删除（Delete）
 >由于 **JavaScript** 的数组其实就是对象，所以`delete`运算符可以用来从数组中移除元素:
 ```js
 delete numbers[2」;
@@ -1504,7 +1500,7 @@ numbers.splice (2，1);
 ```
 >值为，'shi'，的属性的键值从 '3' 变到 '2'。因为被删除属性后面的每个属性必须被移除，并且以一个新的键值重新插入，这对于大型数组来说可能会效率不高。
 
-###枚举（Enumeration）
+### 枚举（Enumeration）
 >因为 **JavaScript**  的数组其实就是对象，所以`for in`语句可以用来遍历一个数组的所有属性。遗憾的是，`for in`无法保证属性的顺序，而大多数要遍历数组的场合都期望按照阿拉伯数字顺序来产生元素。此外，可能从原型链中得到意外属性的问题依旧存在。
 
 >幸运的是，常规的`for`语句可以避免这些问题。**JavaScript** 的`for`语句和大多数类 **C（C-like）** 语言相似。它被3个从句控制—第 1 个初始化循环，第 2 个执行条件检测，第 3 个执行增量运算：
@@ -1515,7 +1511,7 @@ for(i=0; 1<myArray.lenght; i+=1){
 	console.log(myArray[i]);
 }
 ```
-###容易混淆的地方（Confusion）
+### 容易混淆的地方（Confusion）
 >在 **JavaScript** 编程中，一个常见的错误是在必须使用数组时使用了对象，或者在必须使用对象时使用了数组。其实规则很简单:当属性名是小而连续的整数时，你应该使用数组。否则，使用对象。
 
 >**JavaScript** 本身对于数组和对象的区别是混乱的。`typeof`运算符报告数组的类型是 'object'，这没有任何意义。
@@ -1534,7 +1530,7 @@ var is_array = function(value){
 	return Object.prototype.toString.apply(value) === '[object Array]';
 }
 ```
-###方法（Methods）
+### 方法（Methods）
 
 >**JavaScript** 提供了一套数组可用的方法。这些方法是被储存在`Array.prototype`中的函数。在第 3 章里，我们看到`Object.prototype`是可以被扩充的。同样，`Array.prototype`也可以被扩充。
 
@@ -1588,7 +1584,7 @@ console.log(sum,product,total);
 
 >来自第3章的`object.create`方法用在数组是没有意义的，因为它产生一个对象，而不是一个数组。产生的对象将继承这个数组的值和方法，但它没有那个特殊的`length`属性。
 
-###指定初始值（Dimensions）
+### 指定初始值（Dimensions）
 >**JavaScript**的数组通常不会预置值。如果你用`[]`得到一个新数组，它将是空的。如果你访问一个不存在的元素，得到的值则是`undefined`。如果你知道这个问题，或者你在尝试获取每个元素之前都很有预见性地设置它的值，那就万事大吉了。但是，如果你实现的算法是假设每个元素都从一个已知的值开始（例如 0），那么你必须自己准备好这个数组。**JavaScript** 应该提供一些类似`Array.dim`这样的方法来做这件事情，但我们可以很容易纠正这个疏忽：
 
 ```js
@@ -1658,21 +1654,21 @@ console.log(myMatrix[3][3]);	//1
 ```
 
 
-##第七章 —— 正则表达式（Regular Expression）
+## 第七章 —— 正则表达式（Regular Expression）
 
 >更多请点击下面的链接
 > - [js 正则表达式](http://www.w3school.com.cn/js/js_obj_regexp.asp)
 > - [正则表达式30分钟入门教程](http://www.cnblogs.com/deerchao/archive/2006/08/24/zhengzhe30fengzhongjiaocheng.html)
 
-##第八章 —— 方法（Methods）
+## 第八章 —— 方法（Methods）
 
 >更多教程与方法请点击下面的链接
 >-  [http://www.w3school.com.cn/js/index.asp](http://www.w3school.com.cn/js/index.asp)
 
-##第九章 —— 代码风格（Style）
-##第十章 —— 优美的特性（Beautiful Feature）
-##附录 A 毒瘤（Awful Parts）
-###全局变量（Gobal Variables）
+## 第九章 —— 代码风格（Style）
+## 第十章 —— 优美的特性（Beautiful Feature）
+## 附录 A 毒瘤（Awful Parts）
+### 全局变量（Gobal Variables）
 >在 **JavaScript** 所有的糟糕特性之中，最为糟糕的一个就是它对全局变量的依赖。全局变量就是在所有作用域中都可见的变量。全局变量在微型程序中可能会带来方便，但随着程序变得越来越大，它们很快变得难以管理。因为一个全局变量可以被程序的任何部分在任意时间修改，它们使得程序的行为变得极度复杂。在程序中使用全局变量降低了程序的可靠性。
 
 >全局变量使得在同一个程序中运行独立的子程序变得更难。如果某些全局变量的名称碰巧和子程序中的变量名称相同，那么它们将会相互冲突，可能导致程序无法运行，而且通常难以调试。
@@ -1693,11 +1689,12 @@ foo=value;
 ```
 >这种方式本来是为方便初学者，有意让变量在使用前无须声明。遗憾的是，忘记声明变量成了一个非常普遍的错误。 **JavaScript** 的策略是让那些忘记预先声明的变量成为全局变量，这导致查找`bug`非常困难。
 
-###作用域（Scope）
+### 作用域（Scope）
 >**JavaScript** 的语法来源于C。在所有其他类似 **C** 语言风格的语言里，一个代码块（括在一对花括号中的一组语句）会创造一个作用域。代码块中声明的变量在其外部是不可见的。**JsvaScript** 采用了这样的块语法，却没有提供块级作用域:代码块中声明的变量在包含此代码块的函数的任何位置都是可见的。这让有其他语言编码经验的程序员们大为意外。
 
 >在大多数语言中，一般来说，声明变量的最好的地方是在第一次用到它的地方。但这种做法在**JavaScript**里反而是一个坏习惯，因为它没有块级作用域。更好的方式是在每个函数的开头部分声明所有变量。
-###自动插入分号（Semicolon Insertion）
+
+### 自动插入分号（Semicolon Insertion）
 
 >**JavaScript** 有一个自动修复机制，它试图通过自动插入分号来修正有缺损的程序。但是，千万不要指望它，它可能会掩盖更为严重的错误。有时它会不合时宜地插入分号。请考虑在retu二语句中自动插入分号导致的后果。如果一个`return`语句返回一个值，这个值表达式的开始部分必须和`return`位于同一行:
 ```js
@@ -1712,15 +1709,15 @@ return{
       status:true
 };
 ```
-###保留字（Reserved Words）
+### 保留字（Reserved Words）
 >更多请点下面的链接
 >- http://www.w3school.com.cn/js/index.asp
 
-###Unicode
+### Unicode
 >更多请点下面的链接
 >- http://www.w3school.com.cn/js/index.asp
 
-###Typeof
+### Typeof
 
 >`typeof`运算符返回一个用于识别其运算数类型的字符串。所以:
 
@@ -1746,19 +1743,19 @@ return{
 
 >一些实现会返回`'object'`，而其他的返回`'function'`。如果返回`'regexp'`，可能会更有用些，但标准不允许那么做。
 
-###parsetInt
+### parsetInt
 
 >`parseInt`是一个把字符串转换为整数的函数。它在遇到非数字时会停止解析，所以`parseInt("16")`与`parseInt("16 tons")`产生相同的结果。如果该函数会提醒我们出现了额外文本就好了，但它不会那么做。如果该字符串第 1 个字符是。那么该字符串会基于八进制而不是十进制来求值。在八进制中，8 和 9 不是数字，所以`parseInt("08")`和`parseInt("09")`都产生 0 作为结果。这个错误会导致程序解析日期和时间时出现问题。幸运的是，`parseInt`可以接受一个基数作为参数，如此一来`parseInt("08"，10)`结果为 8 。我建议你总是加上这个基数参数。
 
-###+
+### +
 >`+` 运算符可以用于加法运算或字符串连接。它究竟会如何执行取决于其参数的类型。如果其中一个运算数是一个空字符串，它会把另一个运算数转换成字符串并返回。如果两个运算数都是数字，它返回两者之和。否则，它把两个运算数都转换为字符串并连接起来。这个复杂的行为是`bug`的常见来源。如果你打算用 `+` 去做加法运算，请确保两个运算数都是整数。
 
-###浮点数（Floating Point）
+### 浮点数（Floating Point）
 >二进制的浮点数不能正确地处理十进制的小数，因此`0.1+0.2`不等于`0.3`。这是 **JavaScript** 中最经常被报告的`bug`，并且它是遵循二进制浮点数算术标准（ IEEE 754）而有意导致的结果。这个标准对很多应用都是适合的，但它违背了大多数你在中学所学过的关于数字的知识。幸运的是，浮点数中的整数运算是精确的，所以小数表现出来的错误可以通过指定精度来避免。
 
 >举例来说，美元可以通过乘以 100 而全部转成美分，然后就可以准确地将美分相加。它们的和可以再除以 100 转换回美元。当人们计算货币时当然会期望得到精确的结果。
 
-###NaN
+### NaN
 
 >`NaN`是 **IEEE 754** 中定义的一个特殊的数量值。它表示的不是一个数字，尽管下面的表达式返回的是`true`;
 
@@ -1793,7 +1790,7 @@ var isNumber = function isNumber(value){
 } 
 ```
 
-###伪数组（Phony Arrays）
+### 伪数组（Phony Arrays）
 >**JavaScript** 没有真正的数组。这也不全是坏事。**JavaScript** 的数组确实非常容易使用。你不必给它们设置维度，而且它们永远不会产生越界`(out-of-bounds)`错误。但它们的性能相比真正的数组可能相当糟糕。
 
 >`typeof`运算符不能辨别数组和对象。要判断一个值是否为数组，你还需要检查它的`constructor`属性:
@@ -1812,43 +1809,39 @@ if (Object.prototype.toString.apply(my_value) === '[object Array]') {
 ```
 >`argument`数组不是一个数组，它只是一个有着`length`成员属性的对象。上面的检测会分辨出`arguments`并不是一个数组。
 
-###假值（Falsy Values）
-###hasOwnProperty
-###对象（Object）
+### 假值（Falsy Values）
+### hasOwnProperty
+### 对象（Object）
 
 
-##附录 B 糟粕（Bad Parts）
-###==
-###with 语句（with Statement）
-###eval
-###continue 语句（continue Statement）
+## 附录 B 糟粕（Bad Parts）
+### ==
+### with 语句（with Statement）
+### eval
+### continue 语句（continue Statement）
 
 >`continue`语句跳到循环的顶部。我发现一段代码通过重构移除`continue`语句之后，性能都会得到改善
 
-###switch 穿越（switch Fall Through）
-###缺少快语句（Block-less Sattements）
-###++ --
-###位运算符（Bitwise Operators）
-###function 语句对比 function 表达式（The function Statement Versus the function Expression）
-###类型包装对象（Typed Wrappers）
-###new
+### switch 穿越（switch Fall Through）
+### 缺少快语句（Block-less Sattements）
+### ++ --
+### 位运算符（Bitwise Operators）
+### function 语句对比 function 表达式（The function Statement Versus the function Expression）
+### 类型包装对象（Typed Wrappers）
+### new
 
 >**JavaScript** 的`new`运算符创建一个继承于其运算数的原型的新对象，然后调用该运算数，把新创建的对象绑定给`this`。这给运算数 ( 它应该是一个构造器函数 ) 一个机会在返回给请求者前自定义新创建的对象。如果你忘记了使用此`new`运算符，你得到的就是一个普通的函数调用，并且`this`被绑定到全局对象，而不是新创建的对象。这意味着当你的函数尝试去初始化新成员属性时它将会污染全局变量。这是一件非常糟糕的事情。而且既没有编译时警告，也没有运行时警告。按照惯例，打算与`new`结合使用的函数应该以首字母大写的形式命名，并且首字母大写的形式应该只用来命名那些构造器函数。这个约定帮助我们进行区分，便于我们发现那些 **JavaScript** 语言自身经常忽略但却会带来昂贵代价的错误
 
-###void
+### void
 
----
-##附录 C JSLint（JSLint）
+## 附录 C JSLint（JSLint）
 
----
-##附录 D 语法图（Syntax Diagrams）
+## 附录 D 语法图（Syntax Diagrams）
 
----
-##附录 E JSON（JSON）
+## 附录 E JSON（JSON）
 
----
-##扩展阅读
-###一 . 基本语法
+## 扩展阅读
+### 一 . 基本语法
 #### new 一个函数和直接调用函数的异同
 
 >或许许多人对此不以为然，在函数前加 `new` 关键字，不就是实例化一个对象吗？但事情显然没那么简单：
@@ -1878,7 +1871,7 @@ var newT = new Test();
 
 >通过上面两段代码，我们可以得出一个猜测，如果函数返回值为常规意义上的值类型`（Number、String、Boolean）`时，`new` 函数将会返回一个该函数的实例对象，而如果函数返回一个引用类型`（Object、Array、Function）`，则 `new` 函数与直接调用函数产生的结果等同。
 
-####把一个函数赋给一个变量时带括号与不带括号的区别
+#### 把一个函数赋给一个变量时带括号与不带括号的区别
 ```js
 function hi(){  
   var a = 1;  
@@ -2098,11 +2091,10 @@ D.var f = function(a1,a2){
 **> 以上两个对比，说明：**
 >（1）没有加 this取值时，如果当前 {} 中不存在同名的局部变量，则等同于加 this 处理；如果当前 {} 中存在同名的局部变量，则按常规处理。
 
----
-###二 . 特殊用法
+### 二 . 特殊用法
 
-####Apply 与 Call
-#####Apply
+#### Apply 与 Call
+##### Apply
 >`Apply（obj,args）`方法接收两个参数，通过劫持另外一个对象的方法与属性从而达到继承的作用
 >- `obj`：当是`this`时，本对象里的`this`将继承`Function.apply(obj,args)`的`Function`里的属性与方法
 >- `args`：这个是数组，它将作为参数传给`Function（args-->arguments）`
@@ -2208,7 +2200,7 @@ for(var i=0;i<arrLen;i++){
 Array.prototype.push.apply(arr1,arr2)
 ```
 
-#####Call
+##### Call
 
 >`Call`和`Apply`的意思一样,只不过是参数列表不一样.
 
@@ -2216,11 +2208,10 @@ Array.prototype.push.apply(arr1,arr2)
 >- `obj`：与 Apply 相同
 >- `params`：指定的参数列表
 
-#####什么情况下用`apply`,什么情况下用`call`
+##### 什么情况下用`apply`,什么情况下用`call`
 
 >在给对象参数的情况下,如果参数的形式是数组的时候,比如`apply`示例里面传递了参数`arguments`,这个参数是数组类型,并且在调用`Person`的时候参数的列表是对应一致的 **( 也就是`Person`和`Student`的参数列表前两位是一致的 )** 就可以采用 `apply `, 如果我的`Person`的参数列表是这样的`(age,name)`,而`Student`的参数列表是`(name,age,grade)`,这样就可以用`call`来实现了,也就是直接指定参数列表对应值的位置`(Person.call(this,age,name,grade))`;
 
----
 
 >`call` 和 `apply` 都是为了改变某个函数运行时的 `context` 即上下文而存在的，换句话说，就是为了改变函数体内部 this 的指向。因为 JavaScript 的函数存在**「定义时上下文」**和**「运行时上下文」**以及**「上下文是可以改变的」**这样的概念。
 
@@ -2233,7 +2224,6 @@ var func1 = function(arg1, arg2) {};
 
 >JavaScript 中，某个函数的参数数量是不固定的，因此要说适用条件的话，当你的参数是明确知道数量时，用 `call`，而不确定的时候，用 ``apply`，然后把参数 `push` 进数组传递进去。当参数数量不确定时，函数内部也可以通过 `arguments` 这个数组来便利所有的参数。
 
-----
 
 >要先明白存在`call`和`apply`的原因，才能记得牢一点：
 >在`javascript OOP`中，我们经常会这样定义：
